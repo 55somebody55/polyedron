@@ -6,17 +6,17 @@ SIZE = 900
 SCALE = 1.5
 
 
-def x(p):
+def x(p):  # pragma: no cover
     """ преобразование x-координаты """
     return SIZE / 2 + SCALE * p.x
 
 
-def y(p):
+def y(p):  # pragma: no cover
     """" преобразование y-координаты """
     return SIZE / 2 - SCALE * p.y
 
 
-class TkDrawer:
+class TkDrawer:  # pragma: no cover
     """ Графический интерфейс """
 
     # Конструктор

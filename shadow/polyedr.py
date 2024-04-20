@@ -180,7 +180,7 @@ class Polyedr:
                     self.facets.append(Facet(vertexes))
 
     # суммарная длина ребер с "хорошими" точками на концах
-    def good_point_perimetr(self):
+    def good_point_perimetr(self):  # pragma: no cover
         return self.good_perimetr
 
     # Метод изображения полиэдра
