@@ -173,8 +173,6 @@ class Polyedr:
                         if (non_homo_vertexes[n - 1].good_point() and non_homo_vertexes[n].good_point() and
                                 self.num_vertexes[max(int(buf[n - 1]) - 1, int(buf[n]) - 1)]
                                 [min(int(buf[n - 1]) - 1, int(buf[n]) - 1)]):
-                            print(max(int(buf[n - 1]) - 1, int(buf[n]) - 1), min(int(buf[n - 1]) - 1, int(buf[n]) - 1))
-                            print(self.num_vertexes)
                             self.good_perimetr += curr_edge.length()
                             self.num_vertexes[(max(int(buf[n - 1]) - 1, int(buf[n]) - 1))][(min(int(buf[n - 1]) - 1,
                                                                                                 int(buf[n]) - 1))] = 0
