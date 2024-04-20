@@ -1,4 +1,4 @@
-from math import pi
+from math import pi, sqrt
 from functools import reduce
 from operator import add
 from common.r3 import R3
@@ -7,6 +7,7 @@ from common.tk_drawer import TkDrawer
 
 class Segment:
     """ Одномерный отрезок """
+
     # Параметры конструктора: начало и конец отрезка (числа)
 
     def __init__(self, beg, fin):
@@ -42,6 +43,11 @@ class Edge:
         self.beg, self.fin = beg, fin
         # Список «просветов»
         self.gaps = [Segment(Edge.SBEG, Edge.SFIN)]
+
+    # длина ребра
+    def length(self):
+        p = self.fin - self.beg
+        return sqrt(p.dot(p))
 
     # Учёт тени от одной грани
     def shadow(self, facet):
@@ -83,6 +89,7 @@ class Edge:
 
 class Facet:
     """ Грань полиэдра """
+
     # Параметры конструктора: список вершин
 
     def __init__(self, vertexes):
@@ -95,7 +102,7 @@ class Facet:
     # Нормаль к «горизонтальному» полупространству
     def h_normal(self):
         n = (
-            self.vertexes[1] - self.vertexes[0]).cross(
+                self.vertexes[1] - self.vertexes[0]).cross(
             self.vertexes[2] - self.vertexes[0])
         return n * (-1.0) if n.dot(Polyedr.V) < 0.0 else n
 
@@ -108,8 +115,8 @@ class Facet:
     # Вспомогательный метод
     def _vert(self, k):
         n = (self.vertexes[k] - self.vertexes[k - 1]).cross(Polyedr.V)
-        return n * \
-            (-1.0) if n.dot(self.vertexes[k - 1] - self.center()) < 0.0 else n
+        return (n *
+                (-1.0) if n.dot(self.vertexes[k - 1] - self.center()) < 0.0 else n)
 
     # Центр грани
     def center(self):
@@ -126,11 +133,12 @@ class Polyedr:
     def __init__(self, file):
 
         # списки вершин, рёбер и граней полиэдра
-        self.vertexes, self.edges, self.facets = [], [], []
+        self.num_vertexes, self.non_homo_vertexes, self.vertexes, self.edges, self.facets = [[]], [], [], [], []
         self.homo = 0
+        self.good_perimetr = 0
 
         # список строк файла
-        with open(file) as f:
+        with (open(file) as f):
             for i, line in enumerate(f):
                 if i == 0:
                     # обрабатываем первую строку; buf - вспомогательный массив
@@ -142,11 +150,14 @@ class Polyedr:
                 elif i == 1:
                     # во второй строке число вершин, граней и рёбер полиэдра
                     nv, nf, ne = (int(x) for x in line.split())
+                    self.num_vertexes = [[1] * (nv - 1) for _ in range(nv)]
                 elif i < nv + 2:
                     # задание всех вершин полиэдра
                     x, y, z = (float(x) for x in line.split())
                     self.vertexes.append(R3(x, y, z).rz(
                         alpha).ry(beta).rz(gamma) * c)
+                    self.non_homo_vertexes.append(R3(x, y, z).rz(
+                        alpha).ry(beta).rz(gamma))
                 else:
                     # вспомогательный массив
                     buf = line.split()
@@ -154,11 +165,25 @@ class Polyedr:
                     size = int(buf.pop(0))
                     # массив вершин этой грани
                     vertexes = list(self.vertexes[int(n) - 1] for n in buf)
+                    non_homo_vertexes = list(self.non_homo_vertexes[int(n) - 1] for n in buf)
                     # задание рёбер грани
                     for n in range(size):
+                        curr_edge = Edge(non_homo_vertexes[n - 1], non_homo_vertexes[n])
                         self.edges.append(Edge(vertexes[n - 1], vertexes[n]))
+                        if (non_homo_vertexes[n - 1].good_point() and non_homo_vertexes[n].good_point() and
+                                self.num_vertexes[max(int(buf[n - 1]) - 1, int(buf[n]) - 1)]
+                                [min(int(buf[n - 1]) - 1, int(buf[n]) - 1)]):
+                            print(max(int(buf[n - 1]) - 1, int(buf[n]) - 1), min(int(buf[n - 1]) - 1, int(buf[n]) - 1))
+                            print(self.num_vertexes)
+                            self.good_perimetr += curr_edge.length()
+                            self.num_vertexes[(max(int(buf[n - 1]) - 1, int(buf[n]) - 1))][(min(int(buf[n - 1]) - 1,
+                                                                                                int(buf[n]) - 1))] = 0
                     # задание самой грани
                     self.facets.append(Facet(vertexes))
+
+    # суммарная длина ребер с "хорошими" точками на концах
+    def good_point_perimetr(self):
+        return self.good_perimetr
 
     # Метод изображения полиэдра
     def draw(self, tk):  # pragma: no cover
