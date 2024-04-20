@@ -127,6 +127,7 @@ class Polyedr:
 
         # списки вершин, рёбер и граней полиэдра
         self.vertexes, self.edges, self.facets = [], [], []
+        self.homo = 0
 
         # список строк файла
         with open(file) as f:
@@ -135,7 +136,7 @@ class Polyedr:
                     # обрабатываем первую строку; buf - вспомогательный массив
                     buf = line.split()
                     # коэффициент гомотетии
-                    c = float(buf.pop(0))
+                    self.homo = c = float(buf.pop(0))
                     # углы Эйлера, определяющие вращение
                     alpha, beta, gamma = (float(x) * pi / 180.0 for x in buf)
                 elif i == 1:
@@ -162,6 +163,8 @@ class Polyedr:
     # Метод изображения полиэдра
     def draw(self, tk):  # pragma: no cover
         tk.clean()
+        tk.draw_curr_ring(R3(-2, 2, 0) * self.homo, R3(2, -2, 0) * self.homo, R3(-1, 1, 0)
+                          * self.homo, R3(1, -1, 0) * self.homo)
         for e in self.edges:
             for f in self.facets:
                 e.shadow(f)

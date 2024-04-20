@@ -43,6 +43,11 @@ class TkDrawer:
         self.canvas.create_line(x(p), y(p), x(q), y(q), fill="black", width=1)
         self.root.update()
 
+    def draw_curr_ring(self, p1, q1, p2, q2):
+        self.canvas.create_oval(x(p1), y(p1), x(q1), y(q1), fill="#01FFC8", width=1)
+        self.canvas.create_oval(x(p2), y(p2), x(q2), y(q2), fill="white", width=1)
+        self.root.update()
+
 
 if __name__ == "__main__":  # pragma: no cover
 
