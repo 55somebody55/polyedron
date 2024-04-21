@@ -15,7 +15,8 @@ try:
         poly.draw(tk)
         delta_time = time() - start_time
         print(f"Изображение полиэдра '{name}' заняло {delta_time} сек.")
-        print(f"Сумма длин рёбер, оба из концов которых — «хорошие» точки равна: {poly.good_point_perimetr()}")
+        print(f"Сумма длин рёбер, оба из концов которых — «хорошие» точки "
+              f"равна: {poly.good_point_perimetr()}")
         input("Hit 'Return' to continue -> ")
 except (EOFError, KeyboardInterrupt):
     print("\nStop")

@@ -115,8 +115,8 @@ class Facet:
     # Вспомогательный метод
     def _vert(self, k):
         n = (self.vertexes[k] - self.vertexes[k - 1]).cross(Polyedr.V)
-        return (n *
-                (-1.0) if n.dot(self.vertexes[k - 1] - self.center()) < 0.0 else n)
+        return (n * (-1.0) if
+                n.dot(self.vertexes[k - 1] - self.center()) < 0.0 else n)
 
     # Центр грани
     def center(self):
@@ -133,7 +133,8 @@ class Polyedr:
     def __init__(self, file):
 
         # списки вершин, рёбер и граней полиэдра
-        self.num_vertexes, self.non_homo_vertexes, self.vertexes, self.edges, self.facets = [[]], [], [], [], []
+        (self.num_vertexes, self.non_homo_vertexes, self.vertexes,
+         self.edges, self.facets) = [[]], [], [], [], []
         self.homo = 0
         self.good_perimetr = 0
 
@@ -165,17 +166,23 @@ class Polyedr:
                     size = int(buf.pop(0))
                     # массив вершин этой грани
                     vertexes = list(self.vertexes[int(n) - 1] for n in buf)
-                    non_homo_vertexes = list(self.non_homo_vertexes[int(n) - 1] for n in buf)
+                    non_homo_vertexes = list(self.non_homo_vertexes
+                                             [int(n) - 1] for n in buf)
                     # задание рёбер грани
                     for n in range(size):
-                        curr_edge = Edge(non_homo_vertexes[n - 1], non_homo_vertexes[n])
+                        curr_edge = Edge(non_homo_vertexes[n - 1],
+                                         non_homo_vertexes[n])
                         self.edges.append(Edge(vertexes[n - 1], vertexes[n]))
-                        if (non_homo_vertexes[n - 1].good_point() and non_homo_vertexes[n].good_point() and
-                                self.num_vertexes[max(int(buf[n - 1]) - 1, int(buf[n]) - 1)]
+                        if (non_homo_vertexes[n - 1].good_point() and
+                                non_homo_vertexes[n].good_point() and
+                                self.num_vertexes[max(int(buf[n - 1]) - 1,
+                                                      int(buf[n]) - 1)]
                                 [min(int(buf[n - 1]) - 1, int(buf[n]) - 1)]):
                             self.good_perimetr += curr_edge.length()
-                            self.num_vertexes[(max(int(buf[n - 1]) - 1, int(buf[n]) - 1))][(min(int(buf[n - 1]) - 1,
-                                                                                                int(buf[n]) - 1))] = 0
+                            (self.num_vertexes[
+                                (max(int(buf[n - 1]) - 1, int(buf[n]) - 1))][
+                                (min(int(buf[n - 1]) - 1,
+                                     int(buf[n]) - 1))]) = 0
                     # задание самой грани
                     self.facets.append(Facet(vertexes))
 
@@ -186,7 +193,8 @@ class Polyedr:
     # Метод изображения полиэдра
     def draw(self, tk):  # pragma: no cover
         tk.clean()
-        tk.draw_curr_ring(R3(-2, 2, 0) * self.homo, R3(2, -2, 0) * self.homo, R3(-1, 1, 0)
+        tk.draw_curr_ring(R3(-2, 2, 0) * self.homo,
+                          R3(2, -2, 0) * self.homo, R3(-1, 1, 0)
                           * self.homo, R3(1, -1, 0) * self.homo)
         for e in self.edges:
             for f in self.facets:
