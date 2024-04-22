@@ -136,7 +136,7 @@ class Polyedr:
         (self.num_vertexes, self.non_homo_vertexes, self.vertexes,
          self.edges, self.facets) = [[]], [], [], [], []
         self.homo = 0
-        self.good_perimetr = 0
+        self.good_perimetr = 0.0
 
         # список строк файла
         with (open(file) as f):
